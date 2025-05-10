@@ -15,7 +15,7 @@ export function SpecialOffers() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <motion.div 
-            className="bg-white p-8 rounded-lg shadow-sm border border-beige-200"
+            className="bg-white p-8 rounded-lg shadow-sm border border-beige-200 flex flex-col min-h-[300px]"
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -24,12 +24,12 @@ export function SpecialOffers() {
             <div className="flex flex-col h-full">
               <h3 className="font-serif text-2xl text-brown-800 mb-2">15% Off Your Purchase</h3>
               <p className="text-brown-600 mb-4">
-                Enjoy a 15% discount on all perfumes in our collection.
+                Enjoy a 15% discount on all perfumes in our collection. Don’t miss out on this limited-time offer!
               </p>
-              <div className="bg-beige-200 text-brown-800 font-medium p-4 rounded-md mb-4">
-                <p>Applied automatically at checkout when selected</p>
-              </div>
-              <div className="mt-auto">
+              <div className="mt-auto flex flex-col gap-4">
+                <div className="bg-beige-200 text-brown-800 font-medium p-4 rounded-md">
+                  <p>Applied automatically at checkout when selected</p>
+                </div>
                 <button className="btn btn-primary w-full">
                   Shop Now
                 </button>
@@ -38,7 +38,7 @@ export function SpecialOffers() {
           </motion.div>
           
           <motion.div 
-            className="bg-white p-8 rounded-lg shadow-sm border border-beige-200"
+            className="bg-white p-8 rounded-lg shadow-sm border border-beige-200 flex flex-col min-h-[300px]"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -49,10 +49,10 @@ export function SpecialOffers() {
               <p className="text-brown-600 mb-4">
                 Purchase any 4 perfumes and get the 5th one free (lowest priced item).
               </p>
-              <div className="bg-beige-200 text-brown-800 font-medium p-4 rounded-md mb-4">
-                <p>Add 5 perfumes to your cart to activate this offer</p>
-              </div>
-              <div className="mt-auto">
+              <div className="mt-auto flex flex-col gap-4">
+                <div className="bg-beige-200 text-brown-800 font-medium p-4 rounded-md">
+                  <p>Add 5 perfumes to your cart to activate this offer</p>
+                </div>
                 <button className="btn btn-primary w-full">
                   Shop Now
                 </button>
