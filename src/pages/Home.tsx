@@ -111,6 +111,10 @@ export function Home() {
     const isFavorite = wishlist.includes(item.id);
     
     return (
+      <div
+  onClick={() => navigate(`/product/${item.id}`)}
+  className="cursor-pointer"
+>
       <motion.div
         key={item.id}
         initial={{ opacity: 0, y: 20 }}
@@ -155,6 +159,7 @@ export function Home() {
           Add to Cart
         </button>
       </motion.div>
+      </div>
     );
   };
 
