@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Hero } from '../components/home/Hero';
 import { SpecialOffers } from '../components/home/SpecialOffers';
 import { supabase } from '../../supabase/migrations/supabaseClient';
-import "./Home.css";
+import './Home.css';
+import { ProductCard } from '../components/product/ProductCard';
+
 
 export function Home() {
   const [bestSelling, setBestSelling] = useState([]);
@@ -15,9 +17,9 @@ export function Home() {
   const navigate = useNavigate();
 
   const toggleWishlist = (productId) => {
-    setWishlist(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId) 
+    setWishlist(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
         : [...prev, productId]
     );
   };
@@ -93,73 +95,22 @@ export function Home() {
   );
 
   const ArrowIcon = () => (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" 
-      viewBox="0 0 20 20" 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+      viewBox="0 0 20 20"
       fill="currentColor"
     >
-      <path 
-        fillRule="evenodd" 
-        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" 
-        clipRule="evenodd" 
+      <path
+        fillRule="evenodd"
+        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+        clipRule="evenodd"
       />
     </svg>
   );
 
-  const ProductCard = ({ item }) => {
-    const isFavorite = wishlist.includes(item.id);
-    
-    return (
-      <motion.div
-        key={item.id}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        whileHover={{ y: -5 }}
-        className="p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all relative bg-white group"
-      >
-        {/* Favorite Button */}
-        <button
-          onClick={() => toggleWishlist(item.id)}
-          className="absolute fav-icon top-3 right-3 p-2 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 transition-all"
-          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-        >
-          <HeartIcon isFilled={isFavorite} />
-        </button>
-
-        {/* Product Image */}
-        <div className="relative aspect-square overflow-hidden rounded-lg mb-4">
-          <img
-            src={item.Image_url}
-            alt={item.Name}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-
-        {/* Product Info */}
-        <div className="space-y-1">
-          <h3 className="text-lg font-semibold text-gray-900 truncate">
-            {item.Name || 'اسم غير متوفر'}
-          </h3>
-          <p className="text-sm text-gray-500">
-            {item.Brand || 'علامة تجارية غير متوفرة'}
-          </p>
-          <p className="text-lg font-bold text-gray-900">${item.Price || '--'}</p>
-        </div>
-
-        {/* Add to Cart Button */}
-        <button className="mt-4 w-full flex items-center justify-center gap-2 py-2 bg-brown-800 hover:bg-brown-700 text-white rounded-md transition-colors">
-          <ShoppingBagIcon />
-          Add to Cart
-        </button>
-      </motion.div>
-    );
-  };
-
   const SeeMoreButton = ({ onClick, bgClass, hoverBgClass }) => (
-    <motion.button 
+    <motion.button
       onClick={onClick}
       className={`px-10 py-3 ${bgClass} hover:${hoverBgClass} text-brown-800 rounded-md font-medium transition-colors duration-300 flex items-center justify-center mx-auto gap-2 group`}
       whileHover={{ scale: 1.01 }}
@@ -173,7 +124,7 @@ export function Home() {
   return (
     <div>
       <Hero />
-      
+
       {/* Best Selling Section */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
@@ -186,12 +137,21 @@ export function Home() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {bestSelling.slice(0, 4).map((item) => (
-                  <ProductCard key={item.id} item={item} />
+                  <ProductCard
+                    key={item.id}
+                    product={{
+                      id: item.id,
+                      name: item.Name || 'Unnamed Product',
+                      price: item.Price || 0,
+                      image_url: item.Image_url || '',
+                      category: 'Best Seller',
+                    }}
+                  />
                 ))}
               </div>
               {bestSelling.length > 4 && (
                 <div className="text-center mt-10">
-                  <SeeMoreButton 
+                  <SeeMoreButton
                     onClick={() => navigateToCategory('best-selling')}
                     bgClass="bg-beige-100"
                     hoverBgClass="bg-beige-200"
@@ -215,12 +175,21 @@ export function Home() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {menPerfumes.slice(0, 4).map((item) => (
-                  <ProductCard key={item.id} item={item} />
+                  <ProductCard
+                    key={item.id}
+                    product={{
+                      id: item.id,
+                      name: item.Name || 'Unnamed Product',
+                      price: item.Price || 0,
+                      image_url: item.Image_url || '',
+                      category: 'Men',
+                    }}
+                  />
                 ))}
               </div>
               {menPerfumes.length > 4 && (
                 <div className="text-center mt-10">
-                  <SeeMoreButton 
+                  <SeeMoreButton
                     onClick={() => navigateToCategory('men')}
                     bgClass="bg-beige-200"
                     hoverBgClass="bg-beige-300"
@@ -244,12 +213,21 @@ export function Home() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {womenPerfumes.slice(0, 4).map((item) => (
-                  <ProductCard key={item.id} item={item} />
+                  <ProductCard
+                    key={item.id}
+                    product={{
+                      id: item.id,
+                      name: item.Name || 'Unnamed Product',
+                      price: item.Price || 0,
+                      image_url: item.Image_url || '',
+                      category: 'Women',
+                    }}
+                  />
                 ))}
               </div>
               {womenPerfumes.length > 4 && (
                 <div className="text-center mt-10">
-                  <SeeMoreButton 
+                  <SeeMoreButton
                     onClick={() => navigateToCategory('women')}
                     bgClass="bg-beige-300"
                     hoverBgClass="bg-beige-400"
@@ -262,8 +240,8 @@ export function Home() {
       </section>
 
       <SpecialOffers />
-      
-      {/* باقي الأقسام كما هي بدون تغيير */}
+
+      {/* Remaining sections unchanged */}
       <section className="py-20 bg-beige-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -273,13 +251,13 @@ export function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <img 
-                src="../../images/istockphoto-1326570912-612x612.jpg" 
-                alt="LaRose Perfumery" 
+              <img
+                src="../../images/istockphoto-1326570912-612x612.jpg"
+                alt="LaRose Perfumery"
                 className="rounded-lg shadow-md w-full h-auto"
               />
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -295,14 +273,11 @@ export function Home() {
               <p className="text-brown-600 mb-6">
                 Each LaRose creation is meticulously crafted by our master perfumers, who blend the finest ingredients from around the world. We carefully select rare flowers, exotic spices, and precious woods to create perfumes that tell a story.
               </p>
-              {/* <button className="btn btn-outline">
-                Our Story
-              </button> */}
             </motion.div>
           </div>
         </div>
       </section>
-      
+
       <section className="py-20 bg-beige-200">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -313,7 +288,7 @@ export function Home() {
               Sign up for our newsletter to receive updates on new collections, exclusive offers, and perfumery insights.
             </p>
           </div>
-          
+
           <div className="max-w-md mx-auto">
             <form className="flex flex-col sm:flex-row gap-3">
               <input

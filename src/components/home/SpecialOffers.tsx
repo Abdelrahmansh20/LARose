@@ -1,6 +1,13 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export function SpecialOffers() {
+  const navigate = useNavigate();
+
+  const handleShopNow = () => {
+    navigate('/shop');
+  };
+
   return (
     <section className="py-16 bg-beige-100">
       <div className="container">
@@ -30,7 +37,10 @@ export function SpecialOffers() {
                 <div className="bg-beige-200 text-brown-800 font-medium p-4 rounded-md">
                   <p>Applied automatically at checkout when selected</p>
                 </div>
-                <button className="btn btn-primary w-full">
+                <button 
+                  className="btn btn-primary w-full"
+                  onClick={handleShopNow}
+                >
                   Shop Now
                 </button>
               </div>
@@ -53,7 +63,10 @@ export function SpecialOffers() {
                 <div className="bg-beige-200 text-brown-800 font-medium p-4 rounded-md">
                   <p>Add 5 perfumes to your cart to activate this offer</p>
                 </div>
-                <button className="btn btn-primary w-full">
+                <button 
+                  className="btn btn-primary w-full"
+                  onClick={handleShopNow}
+                >
                   Shop Now
                 </button>
               </div>
