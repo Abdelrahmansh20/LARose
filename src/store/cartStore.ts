@@ -1,6 +1,46 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CartItem, findBestOffer } from '../lib/utils';
+
+export interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image_url: string;
+}
+
+export const findBestOffer = (items: CartItem[]) => {
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  let appliedOffer: string | null = null;
+  let discountedTotal = subtotal;
+
+  // Offer 1: Buy 4, Get 1 Free
+  let buy4Get1FreeDiscount = 0;
+  if (totalQuantity >= 5) {
+    const allItems = items
+      .flatMap(item => Array(item.quantity).fill(item))
+      .sort((a, b) => a.price - b.price);
+    const freeItemsCount = Math.floor(totalQuantity / 5);
+    const freeItems = allItems.slice(0, freeItemsCount);
+    buy4Get1FreeDiscount = freeItems.reduce((sum, item) => sum + item.price, 0);
+  }
+
+  // Offer 2: 15% Off
+  const fifteenPercentOffDiscount = subtotal * 0.15;
+
+  // Choose the best offer
+  if (buy4Get1FreeDiscount > fifteenPercentOffDiscount && totalQuantity >= 5) {
+    appliedOffer = "Buy 4, Get 1 Free";
+    discountedTotal = subtotal - buy4Get1FreeDiscount;
+  } else if (fifteenPercentOffDiscount > 0) {
+    appliedOffer = "15% Off";
+    discountedTotal = subtotal - fifteenPercentOffDiscount;
+  }
+
+  return { appliedOffer, discountedTotal };
+};
 
 interface CartState {
   items: CartItem[];
@@ -28,14 +68,12 @@ export const useCartStore = create<CartState>()(
           );
 
           if (existingItemIndex !== -1) {
-            // Item already exists, increment quantity
             const updatedItems = [...state.items];
             updatedItems[existingItemIndex].quantity += 1;
 
             const { appliedOffer } = findBestOffer(updatedItems);
             return { items: updatedItems, appliedOffer };
           } else {
-            // Add new item with quantity of 1
             const updatedItems = [...state.items, { ...newItem, quantity: 1 }];
             const { appliedOffer } = findBestOffer(updatedItems);
             return { items: updatedItems, appliedOffer };

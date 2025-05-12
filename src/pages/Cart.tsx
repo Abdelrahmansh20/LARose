@@ -17,6 +17,7 @@ export function Cart() {
     total,
     appliedOffer
   } = useCartStore();
+  const totalItems = useCartStore((state) => state.totalItems());
   const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
@@ -131,6 +132,12 @@ export function Cart() {
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
               <h2 className="font-serif text-xl text-brown-800 mb-6">Order Summary</h2>
               
+              {totalItems < 5 && (
+                <div className="text-sm text-brown-600 mb-4">
+                  Add {5 - totalItems} more item{5 - totalItems === 1 ? '' : 's'} to get 1 free!
+                </div>
+              )}
+              
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between">
                   <span className="text-brown-600">Subtotal</span>
@@ -138,7 +145,12 @@ export function Cart() {
                 </div>
                 
                 {discount() > 0 && (
-                  <div className="flex justify-between text-green-600">
+                  <motion.div
+                    className="flex justify-between text-green-600"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <span className="flex items-center">
                       Discount
                       {appliedOffer && (
@@ -148,7 +160,7 @@ export function Cart() {
                       )}
                     </span>
                     <span className="font-medium">-{formatPrice(discount())}</span>
-                  </div>
+                  </motion.div>
                 )}
                 
                 <div className="border-t border-beige-200 pt-4 flex justify-between text-lg font-semibold">
