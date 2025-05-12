@@ -10,14 +10,14 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { signInWithEmail, signInWithGoogle, signInAnonymously } = useAuth();
+  const { signInWithEmail, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) {
-      setErrorMessage('Please enter both email and password');
+      setErrorMessage('Please fill in all fields');
       return;
     }
     
@@ -28,7 +28,12 @@ export function Login() {
       const { error } = await signInWithEmail(email, password);
       
       if (error) {
-        throw error;
+        if (error.message.includes('Email not confirmed')) {
+          setErrorMessage('Please check your email to confirm your account');
+        } else {
+          setErrorMessage(error.message);
+        }
+        return;
       }
       
       navigate('/');
@@ -53,25 +58,6 @@ export function Login() {
     } catch (error: any) {
       console.error('Google login error:', error);
       setErrorMessage(error.message || 'Failed to sign in with Google');
-      setIsSubmitting(false);
-    }
-  };
-  
-  const handleAnonymousLogin = async () => {
-    try {
-      setErrorMessage('');
-      setIsSubmitting(true);
-      
-      const { error } = await signInAnonymously();
-      
-      if (error) {
-        throw error;
-      }
-      
-      navigate('/');
-    } catch (error: any) {
-      console.error('Anonymous login error:', error);
-      setErrorMessage(error.message || 'Failed to sign in anonymously');
       setIsSubmitting(false);
     }
   };
@@ -121,17 +107,9 @@ export function Login() {
               </div>
               
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label htmlFor="password" className="block text-sm font-medium text-brown-700">
-                    Password
-                  </label>
-                  <Link 
-                    to="/forgot-password" 
-                    className="text-xs text-brown-600 hover:text-brown-800"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
+                <label htmlFor="password" className="block text-sm font-medium text-brown-700 mb-1">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     id="password"
@@ -170,7 +148,7 @@ export function Login() {
                 </div>
               </div>
               
-              <div className="mt-6 space-y-3">
+              <div className="mt-6">
                 <button
                   type="button"
                   className="btn btn-outline w-full flex items-center justify-center"
@@ -187,15 +165,6 @@ export function Login() {
                   </svg>
                   Google
                 </button>
-                
-                <button
-                  type="button"
-                  className="btn btn-outline w-full"
-                  onClick={handleAnonymousLogin}
-                  disabled={isSubmitting}
-                >
-                  Continue as Guest
-                </button>
               </div>
             </div>
             
@@ -205,7 +174,7 @@ export function Login() {
                 to="/register" 
                 className="font-medium text-brown-800 hover:text-brown-900"
               >
-                Sign up
+                Create one
               </Link>
             </p>
           </motion.div>

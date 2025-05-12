@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Mail, Lock, User, AlertCircle } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export function Register() {
   const [email, setEmail] = useState('');
@@ -13,11 +14,12 @@ export function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { signUpWithEmail, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
   
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword || !username) {
       setErrorMessage('Please fill in all fields');
       return;
     }
@@ -31,16 +33,42 @@ export function Register() {
       setErrorMessage('');
       setIsSubmitting(true);
       
-      const { error } = await signUpWithEmail(email, password);
+      // First, create the auth user
+      const { data, error } = await signUpWithEmail(email, password);
       
       if (error) {
         throw error;
       }
       
+      if (!data?.user) {
+        throw new Error('Failed to create user account');
+      }
+
+      // Then, create the user profile
+      const { error: dbError } = await supabase
+        .from('users')
+        .insert([
+          {
+            email,
+            username,
+            password,
+            wishlist: [],
+            cart: [],
+            created_at: new Date().toISOString(),
+          }
+        ])
+        .select();
+      
+      if (dbError) {
+        console.error('Error creating user profile:', dbError);
+        throw dbError;
+      }
+      
+      // If everything is successful, navigate to home
       navigate('/');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration error:', error);
-      setErrorMessage(error.message || 'Failed to create account');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to create account');
     } finally {
       setIsSubmitting(false);
     }
@@ -56,9 +84,9 @@ export function Register() {
       if (error) {
         throw error;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Google login error:', error);
-      setErrorMessage(error.message || 'Failed to sign in with Google');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to sign in with Google');
       setIsSubmitting(false);
     }
   };
@@ -101,6 +129,27 @@ export function Register() {
                     required
                   />
                   <Mail 
+                    size={18} 
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent-500" 
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-brown-700 mb-1">
+                  Username
+                </label>
+                <div className="relative">
+                  <input
+                    id="username"
+                    type="text"
+                    className="input pl-10 w-full"
+                    placeholder="Your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                  <User 
                     size={18} 
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent-500" 
                   />
