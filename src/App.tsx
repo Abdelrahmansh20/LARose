@@ -11,6 +11,7 @@ import { Account } from './pages/Account';
 import { Checkout } from './pages/Checkout';
 import { Admin } from './pages/Admin';
 import { NotFound } from './pages/NotFound';
+import { Wishlist } from './pages/Wishlist';
 
 export function App() {
   return (
@@ -28,6 +29,7 @@ export function App() {
             <Route path="/account" element={<Account />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/wishlist" element={<Wishlist />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

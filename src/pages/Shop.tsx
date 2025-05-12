@@ -27,7 +27,7 @@ export function Shop() {
   async function fetchProducts() {
     try {
       setLoading(true);
-      let query = supabase.from('products').select('*');
+      let query = supabase.from('perfumes').select('*');
       
       const { data, error } = await query;
       
@@ -50,9 +50,9 @@ export function Shop() {
   }
   
   const filteredProducts = products.filter((product) => {
-    const matchesFilter = filter === 'all' || product.category.toLowerCase() === filter.toLowerCase();
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                           product.category.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filter === 'all' || (product.category && product.category.toLowerCase() === filter.toLowerCase());
+    const matchesSearch = (product.name && product.name.toLowerCase().includes(searchQuery.toLowerCase())) || 
+                           (product.category && product.category.toLowerCase().includes(searchQuery.toLowerCase()));
                            
     return matchesFilter && matchesSearch;
   });
