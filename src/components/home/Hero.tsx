@@ -4,12 +4,12 @@ import { Button } from '../ui/Button';
 
 export function Hero() {
   return (
-    <div className="relative min-h-screen flex items-center">
-      <div className="absolute inset-0 z-0">
+    <div className="relative  min-h-screen flex items-center">
+      <div className="absolute  inset-0 z-0">
         <img
           src="https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
           alt="Luxury perfume bottles"
-          className="w-full h-full object-cover"
+          className="w-full h-full  object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
       </div>

@@ -123,8 +123,9 @@ export function Home() {
 
   return (
     <div>
-      <Hero />
-
+      <div className="div top-0 left-0 right-0 z-0">
+      <Hero  />
+</div>
       {/* Best Selling Section */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">

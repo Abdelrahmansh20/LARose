@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { NavBar } from './components/NavBar';
+import { NavBar } from './components/layout/NavBar';
 import { Footer } from './components/layout/Footer';
 import { Home } from './pages/Home';
 import { Shop } from './pages/Shop';
@@ -18,7 +18,7 @@ export function App() {
     <Router>
       <div className="min-h-screen bg-beige-50">
         <NavBar />
-        <main className="pt-16">
+        <main className="">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
